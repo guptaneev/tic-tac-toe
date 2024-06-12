@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /*
@@ -70,13 +71,17 @@ class Board {
      */
 
     public boolean makeMove(int row, int col, char symbol) {
-        if (row > 2 || row < 0 || col > 2 || col < 0) {
-            System.out.println("Out of bounds!");
-            return false;
+        try {
+            if (grid[row][col] == '-') {
+                grid[row][col] = symbol;
+                return true;
+            }
         }
-        if (grid[row][col] == '-') {
-            grid[row][col] = symbol;
-            return true;
+        catch (IndexOutOfBoundsException e) {
+            System.out.println("This is not in the bounds of the game board!");
+        }
+        catch (InputMismatchException i) {
+            System.out.println("Please type in your input in the form (row column) - Example: 1 1 ");
         }
         return false;
     }
@@ -199,19 +204,16 @@ class HumanPlayer extends Player {
         boolean validMove;
         do {
             System.out.println("Enter your move (row and column) - Example: 2 2 ");
-            row = scanner.nextInt();
-            col = scanner.nextInt();
+                row = scanner.nextInt();
+                col = scanner.nextInt();
             validMove = board.makeMove(row, col, symbol);
-            if (!validMove || row > 2 || row < 0 || col > 2 || col < 0) {
-                System.out.println("Invalid move. Try again.");
-            }
         } while (!validMove);
     }
 }
 
 /*
 Bot class is a subclass of Player. Represents the bot player that makes the best move given a board.
-Contains method to calculate this best move using min-max algorithm and backtracking, as well as overriden method makeMove.
+Contains method to calculate this best move using min-max algorithm and backtracking, as well as overridden method makeMove.
  */
 
 class Bot extends Player {
